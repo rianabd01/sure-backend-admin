@@ -7,7 +7,12 @@ const userJWTVerification = require('../UserJWTVerification');
 dotenv.config();
 const getTrashList = async (request, h) => {
   // eslint-disable-next-line object-curly-newline
-  const { location, verified, deleted, datesort = 'desc' } = request.query;
+  const {
+    location,
+    verified = 1,
+    deleted = 1,
+    datesort = 'desc',
+  } = request.query;
 
   const userId = userJWTVerification(request);
 
@@ -59,8 +64,8 @@ const getTrashList = async (request, h) => {
         },
       ],
       where: {
-        is_verified: verified === 0 ? verified : 1,
-        is_deleted: deleted === 0 ? deleted : 1,
+        is_verified: verified,
+        is_deleted: deleted,
       },
       order: [['created_at', datesort]],
     });
