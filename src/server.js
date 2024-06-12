@@ -12,7 +12,10 @@ const init = async () => {
     port: 9000,
     host: '0.0.0.0',
     routes: {
-      cors: true,
+      cors: {
+        origin: ['http://localhost:5173'],
+        additionalHeaders: ['cache-control', 'x-requested-with'],
+      },
     },
   });
 
