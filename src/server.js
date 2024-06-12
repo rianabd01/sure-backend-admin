@@ -9,7 +9,7 @@ const init = async () => {
   //   host: process.env.MYSQL_HOST,
   // });
   const server = Hapi.server({
-    port: 5000,
+    port: 9000,
     host: '0.0.0.0',
   });
 

@@ -1,10 +1,13 @@
 const Joi = require('joi');
-const getTrashDetail = require('../handler/trash/GetTrashDetail');
 const getTrashList = require('../handler/trash/GetTrashList');
 const loginHandler = require('../handler/auth/LoginHandler');
 const putVerifyTrash = require('../handler/trash/PutVerifyTrash');
 const getTrashProofList = require('../handler/trash/GetTrashProofList');
 const putVerifyTrashProof = require('../handler/trash/PutVerifyTrashProof');
+const putToDeleteTrash = require('../handler/trash/PutToDeleteTrash');
+const getTrashDetail = require('../handler/trash/GetTrashDetail');
+const getTrashProofDetail = require('../handler/trash/GetTrashProofDetail');
+const putToUnDeleteTrash = require('../handler/trash/PutToUnDeleteTrash');
 
 const routes = [
   {
@@ -19,14 +22,29 @@ const routes = [
   },
   {
     method: 'GET',
-    path: '/trash/proof',
+    path: '/proof',
     handler: getTrashProofList,
+  },
+  {
+    method: 'GET',
+    path: '/proof/{id}',
+    handler: getTrashProofDetail,
   },
 
   {
     method: 'PUT',
     path: '/verify-trash/{id}',
     handler: putVerifyTrash,
+  },
+  {
+    method: 'PUT',
+    path: '/remove-trash/{id}',
+    handler: putToDeleteTrash,
+  },
+  {
+    method: 'PUT',
+    path: '/unremove-trash/{id}',
+    handler: putToUnDeleteTrash,
   },
   {
     method: 'PUT',

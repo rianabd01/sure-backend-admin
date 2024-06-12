@@ -1,4 +1,5 @@
-const { Users, TrashProof } = require('../../associations');
+const { Users, TrashProof, Trash } = require('../../associations');
+const sequelize = require('../../sequelize');
 const getUserIdFromToken = require('../UserJWTVerification');
 
 const putVerifyTrashProof = async (request, h) => {
@@ -8,6 +9,7 @@ const putVerifyTrashProof = async (request, h) => {
 
   try {
     const trashProofItem = await TrashProof.findByPk(id);
+    const trash = await Trash.findByPk(trashProofItem.trash_id);
     const user = await Users.findByPk(userId);
 
     // Check if send his valid token
@@ -45,7 +47,7 @@ const putVerifyTrashProof = async (request, h) => {
       return h
         .response({
           status: 'fail',
-          message: 'trash not found',
+          message: 'proof not found',
         })
         .code(404);
     }
@@ -60,15 +62,31 @@ const putVerifyTrashProof = async (request, h) => {
         .code(403);
     }
 
-    // Verify the trash proof
-    // eslint-disable-next-line camelcase
-    trashProofItem.is_verified = 1;
-    await trashProofItem.save();
+    // Start a transaction
+    const transaction = await sequelize.transaction();
 
-    return h.response({
-      status: 'success',
-      message: 'verify trash success',
-    });
+    try {
+      // Verify the trash proof
+      // eslint-disable-next-line camelcase
+      trashProofItem.is_verified = 1;
+      trash.user_finisher_id = trashProofItem.user_id;
+
+      // Save both changes within the transaction
+      await trashProofItem.save({ transaction });
+      await trash.save({ transaction });
+
+      // Commit the transaction if all operations succeed
+      await transaction.commit();
+
+      return h.response({
+        status: 'success',
+        message: 'verify proof success',
+      });
+    } catch (error) {
+      // Rollback the transaction if any operation fails
+      await transaction.rollback();
+      throw error; // Rethrow the error for the outer catch block
+    }
   } catch (error) {
     return h
       .response({

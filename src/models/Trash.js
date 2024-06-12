@@ -17,7 +17,9 @@ const Trash = sequelize.define(
     location_url: { type: DataTypes.STRING, allowNull: false },
     user_uploader_id: { type: DataTypes.INTEGER, allowNull: true },
     is_verified: { type: DataTypes.TINYINT, allowNull: true },
+    user_finisher_id: { type: DataTypes.INTEGER, allowNull: true },
     is_deleted: { type: DataTypes.TINYINT, allowNull: true },
+    created_at: { type: DataTypes.DATE, allowNull: true },
   },
   {
     tableName: 'trash',

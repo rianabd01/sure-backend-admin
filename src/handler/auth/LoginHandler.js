@@ -30,8 +30,10 @@ const loginHandler = async (request, h) => {
       .code(400);
   }
 
-  // Find user on database
-  const user = await Users.findOne({ where: { username, is_verified: 1 } });
+  // Find user admin on database
+  const user = await Users.findOne({
+    where: { username, is_verified: 1, level: 100 },
+  });
   if (!user) {
     return h
       .response({

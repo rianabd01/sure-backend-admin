@@ -11,7 +11,7 @@ const userJWTVerification = require('../UserJWTVerification');
 dotenv.config();
 const getTrashProofList = async (request, h) => {
   // eslint-disable-next-line object-curly-newline
-  const { category, datesort = 'desc' } = request.query;
+  const { verified, datesort = 'desc' } = request.query;
   const userId = userJWTVerification(request);
 
   try {
@@ -47,6 +47,11 @@ const getTrashProofList = async (request, h) => {
         .code(403);
     }
 
+    const whereClause = {};
+    if (verified !== undefined) {
+      whereClause.is_verified = verified;
+    }
+
     const trashProofList = await TrashProof.findAll({
       include: [
         {
@@ -63,9 +68,7 @@ const getTrashProofList = async (request, h) => {
           attributes: ['image_path'],
         },
       ],
-      where: {
-        is_verified: category === 'verified' ? 1 : 0,
-      },
+      where: whereClause,
       order: [['created_at', datesort]],
     });
 
@@ -85,7 +88,7 @@ const getTrashProofList = async (request, h) => {
       serverHostURL += `:${process.env.SERVER_PORT}`;
     }
 
-    const result = trashProofList.map((proof) => ({
+    const results = trashProofList.map((proof) => ({
       trash_id: proof.Trash.trash_id,
       trash_proof_id: proof.trash_proof_id,
       user_message: proof.user_message,
@@ -103,7 +106,7 @@ const getTrashProofList = async (request, h) => {
       .response({
         status: 'success',
         message: 'success GET trash list',
-        result,
+        results,
       })
       .code(200);
   } catch (error) {

@@ -1,11 +1,16 @@
-// eslint-disable-next-line object-curly-newline
 const dotenv = require('dotenv');
 // eslint-disable-next-line object-curly-newline
-const { Trash, Pictures, Cities, Users } = require('../../associations/index');
+const {
+  Trash,
+  Cities,
+  Users,
+  TrashProof,
+  ProofPictures,
+} = require('../../associations/index');
 const userJWTVerification = require('../UserJWTVerification');
 
 dotenv.config();
-const getTrashDetail = async (request, h) => {
+const getTrashProofDetail = async (request, h) => {
   const { id } = request.params;
   const userId = userJWTVerification(request);
 
@@ -43,32 +48,32 @@ const getTrashDetail = async (request, h) => {
     }
 
     // Find trash by id
-    const trash = await Trash.findByPk(id, {
+    const trashProof = await TrashProof.findByPk(id, {
       include: [
         {
-          model: Pictures,
-          as: 'pictures',
+          model: ProofPictures,
+          as: 'proof_pictures',
           attributes: ['image_path'],
         },
-        {
-          model: Cities,
-          as: 'cities',
-          attributes: ['name'],
-        },
+
         {
           model: Users,
-          as: 'users',
           attributes: ['full_name', 'user_id'],
+        },
+        {
+          model: Trash,
+          attributes: ['title', 'address', 'location_url'],
+          include: [{ model: Cities, as: 'cities', attributes: ['name'] }],
         },
       ],
     });
 
     // Check if trash not found
-    if (!trash) {
+    if (!trashProof) {
       return h
         .response({
           status: 'fail',
-          message: 'trash not found',
+          message: 'proof not found',
         })
         .code(404);
     }
@@ -80,19 +85,19 @@ const getTrashDetail = async (request, h) => {
     }
 
     const results = {
-      id: trash.trash_id,
-      title: trash.title,
-      description: trash.description,
-      city: trash.cities.name,
-      address: trash.address,
-      location_url: trash.location_url,
-      uploader_id: trash.users.user_id === 3 ? 3 : trash.users.user_id,
-      uploader: trash.users.full_name,
-      pictures: trash.pictures.map(
+      id: trashProof.trash_proof_id,
+      trash_id: trashProof.trash_id,
+      title: trashProof.Trash.title,
+      user_message: trashProof.user_message,
+      city: trashProof.Trash.cities.name,
+      address: trashProof.Trash.address,
+      location_url: trashProof.Trash.location_url,
+      finisher_id: trashProof.user_id,
+      finisher: trashProof.User.full_name,
+      pictures: trashProof.proof_pictures.map(
         (picture) => `${serverHostURL}${picture.image_path}`,
       ),
-      is_verified: trash.is_verified,
-      is_deleted: trash.is_deleted,
+      is_verified: trashProof.is_verified,
     };
 
     return h
@@ -113,4 +118,4 @@ const getTrashDetail = async (request, h) => {
   }
 };
 
-module.exports = getTrashDetail;
+module.exports = getTrashProofDetail;
