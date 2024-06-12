@@ -72,15 +72,15 @@ const getTrashProofList = async (request, h) => {
       order: [['created_at', datesort]],
     });
 
-    // Check if trash list not found
-    if (!trashProofList || trashProofList.length === 0) {
-      return h
-        .response({
-          status: 'fail',
-          message: 'trash list is not found',
-        })
-        .code(404);
-    }
+    // // Check if trash list not found
+    // if (!trashProofList || trashProofList.length === 0) {
+    //   return h
+    //     .response({
+    //       status: 'fail',
+    //       message: 'trash list is not found',
+    //     })
+    //     .code(202);
+    // }
 
     // Result if trash found
     let serverHostURL = `${process.env.SERVER_HOST}`;
