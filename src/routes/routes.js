@@ -51,13 +51,6 @@ const routes = [
     path: '/verify-proof/{id}',
     handler: putVerifyTrashProof,
   },
-  // {
-  //   method: 'POST',
-  //   path: '/verify-proof/{id}',
-  //   handler: postTrashProofHandler,
-  // },
-
-  // User auth
   {
     method: 'POST',
     path: '/login',
