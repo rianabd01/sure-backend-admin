@@ -4,6 +4,11 @@
 
 The Admin Server provides endpoints for managing trash reports and user authentication. All paths in this route require an authorization header with an account level of 100.
 
+### Instalization
+
+- Ensure you has installed sure-backend-api (sure client api)
+- Setting .env like your sure client api
+
 ### HOW TO BE ADMIN SURE
 
 Please register account first with register api at sure-backend-api and then change level field in your account to 100 with MySQL Query.
