@@ -12,6 +12,9 @@ The Admin Server provides endpoints for managing trash reports and user authenti
 ### HOW TO BE ADMIN SURE
 
 Please register account first with register api at sure-backend-api and then change level field in your account to 100 with MySQL Query.
+OR Use Demo Account: 
+- username: Admin1
+- password: admin
 
 ### Endpoints
 
